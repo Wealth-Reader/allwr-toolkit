@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+site/
+
+# Environment and secrets - never commit credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Migration working data - never commit real exports, state or reports
+*.sqlite3
+migration-state*.db
+migration-plan*.json
+migration-report*.json
+migration-report*.html
+migration-errors*.csv
+migration-warnings*.csv
+migration-cleanup*.json
+exports/
+!examples/reports/migration-plan.json
+!examples/reports/migration-report.json
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
