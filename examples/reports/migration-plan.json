@@ -1,0 +1,119 @@
+{
+  "plan_version": 1,
+  "run_id": "3fbeaa2a333b48d7ad38c1b261009862",
+  "created_at": "2026-08-30T23:36:32.330438Z",
+  "toolkit_version": "0.1.0.dev0",
+  "source": {
+    "system": "asana",
+    "scope": "export:export",
+    "connector_version": "0.1.0"
+  },
+  "target": {
+    "base_url": "https://allwr.example.com/api/v1",
+    "project_id": 42,
+    "section_open": 100,
+    "section_done": 101,
+    "import_source": "asana",
+    "import_batch_id": 1,
+    "environment": "sandbox"
+  },
+  "config_hash": "9f02c466cccd87846e37f7f609108b3f8f2af1a975c739b76314acd666930432",
+  "counts": {
+    "selected": 2,
+    "excluded": 0,
+    "operations": 7,
+    "comments": 2,
+    "attachments": 1
+  },
+  "selected_ids": [
+    "1200000000000001",
+    "1200000000000004"
+  ],
+  "excluded_ids": [],
+  "duplicate_suspects": [
+    [
+      "1200000000000001",
+      "1200000000000004"
+    ]
+  ],
+  "unsupported_fields": [
+    {
+      "record_id": "1200000000000001",
+      "field": "dependencies",
+      "reason": "task dependencies are not supported by the target API",
+      "sample_value": null
+    }
+  ],
+  "warnings": [
+    {
+      "code": "external_attachment_linked",
+      "severity": "info",
+      "message": "attachment 'brand deck' is externally hosted; linked, not copied",
+      "record_id": "1200000000000001"
+    },
+    {
+      "code": "duplicate_suspect",
+      "severity": "info",
+      "message": "2 records share the same title; they stay distinct records",
+      "record_id": "1200000000000001"
+    },
+    {
+      "code": "unknown_user",
+      "severity": "medium",
+      "message": "source user '1200000000000198' has no mapping; policy 'null'",
+      "record_id": null
+    },
+    {
+      "code": "unsupported_field",
+      "severity": "medium",
+      "message": "field 'dependencies' is not supported: task dependencies are not supported by the target API",
+      "record_id": "1200000000000001"
+    }
+  ],
+  "operations": [
+    {
+      "op": "create_task",
+      "source_record_id": "1200000000000001",
+      "client_request_id": "asana-task-1200000000000001",
+      "detail": "Redesign the landing page"
+    },
+    {
+      "op": "add_comment",
+      "source_record_id": "1200000000000001",
+      "client_request_id": "asana-comment-1200000000000501",
+      "detail": ""
+    },
+    {
+      "op": "add_comment",
+      "source_record_id": "1200000000000001",
+      "client_request_id": "asana-comment-1200000000000502",
+      "detail": ""
+    },
+    {
+      "op": "upload_attachment",
+      "source_record_id": "1200000000000001",
+      "client_request_id": "asana-attachment-1200000000000601",
+      "detail": "wireframe.txt"
+    },
+    {
+      "op": "create_task",
+      "source_record_id": "1200000000000002",
+      "client_request_id": "asana-task-1200000000000002",
+      "detail": "Write new pricing copy"
+    },
+    {
+      "op": "create_relationship",
+      "source_record_id": "1200000000000002",
+      "client_request_id": "asana-rel-1200000000000002",
+      "detail": "subtask_of"
+    },
+    {
+      "op": "create_task",
+      "source_record_id": "1200000000000004",
+      "client_request_id": "asana-task-1200000000000004",
+      "detail": "Redesign the landing page"
+    }
+  ],
+  "attachments_bytes_estimate": 24,
+  "plan_hash": "e67f7418421c547f01b4b9f8011d7f29a84dd05d2d1ba607f34f2f321ba94b43"
+}

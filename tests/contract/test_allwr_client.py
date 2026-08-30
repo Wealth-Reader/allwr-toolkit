@@ -149,7 +149,8 @@ def test_upload_attachment_streams_multipart(tmp_path) -> None:  # type: ignore[
 def test_error_messages_are_redacted() -> None:
     respx.post(f"{TARGET_BASE_URL}/tasks").mock(
         return_value=httpx.Response(
-            400, json={"ok": False, "error": "bad", "message": "leaked wrk-[REDACTED] here"}
+            400,
+            json={"ok": False, "error": "bad", "message": "leaked wrk-[REDACTED] here"},  # audit-ok
         )
     )
     with make_client() as client, pytest.raises(TargetError) as excinfo:

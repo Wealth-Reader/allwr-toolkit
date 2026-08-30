@@ -1,0 +1,63 @@
+{
+  "run_id": "3fbeaa2a333b48d7ad38c1b261009862",
+  "generated_at": "2026-08-30T23:36:32.544592+00:00",
+  "dry_run": true,
+  "toolkit_version": "0.1.0.dev0",
+  "connector_version": "0.1.0",
+  "source": {
+    "system": "asana",
+    "scope": "export:export"
+  },
+  "target": {
+    "base_url": "https://allwr.example.com/api/v1",
+    "project_id": 42,
+    "environment": "sandbox"
+  },
+  "counts": {
+    "planned": 2,
+    "created": 3,
+    "replayed": 0,
+    "skipped": 0,
+    "failed": 0,
+    "comments_created": 0,
+    "attachments_created": 0,
+    "relationships_created": 0
+  },
+  "cancelled": false,
+  "unsupported_fields": [
+    {
+      "record_id": "1200000000000001",
+      "field": "dependencies",
+      "reason": "task dependencies are not supported by the target API",
+      "sample_value": null
+    }
+  ],
+  "warnings": [
+    {
+      "code": "external_attachment_linked",
+      "severity": "info",
+      "message": "attachment 'brand deck' is externally hosted; linked, not copied",
+      "record_id": "1200000000000001"
+    },
+    {
+      "code": "duplicate_suspect",
+      "severity": "info",
+      "message": "2 records share the same title; they stay distinct records",
+      "record_id": "1200000000000001"
+    },
+    {
+      "code": "unknown_user",
+      "severity": "medium",
+      "message": "source user '1200000000000198' has no mapping; policy 'null'",
+      "record_id": null
+    },
+    {
+      "code": "unsupported_field",
+      "severity": "medium",
+      "message": "field 'dependencies' is not supported: task dependencies are not supported by the target API",
+      "record_id": "1200000000000001"
+    }
+  ],
+  "errors": [],
+  "id_map": {}
+}

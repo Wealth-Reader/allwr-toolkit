@@ -33,7 +33,7 @@ SECRET_PATTERNS: dict[str, re.Pattern[str]] = {
 # Internal identifiers that must never ship in the public toolkit.
 REAL_DATA_PATTERNS: dict[str, re.Pattern[str]] = {
     "internal hostname": re.compile(
-        r"\b([REDACTED-HOST]|[REDACTED-HOST]|[REDACTED-HOST]|www-local\.allwr\.io)\b"
+        r"\b([REDACTED-HOST]|[REDACTED-HOST]|[REDACTED-HOST]|www-local\.allwr\.io)\b"  # audit-ok
     ),
     # The public homepage may be referenced; a production API/app URL may not.
     "production api url": re.compile(r"https://www\.allwr\.io/\S*(api|app|tasks)"),
