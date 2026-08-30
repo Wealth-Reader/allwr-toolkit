@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose an improvement to the toolkit.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that the toolkit does not support?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - migration-core
+        - api-client
+        - cli
+        - mcp
+        - asana
+        - freshdesk
+        - documentation
+        - other
+    validations:
+      required: true

@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  policy:
+    name: Repository policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: English-only language check
+        run: python scripts/validate_repository_language.py
+      - name: Publication audit (secrets / real data)
+        run: python scripts/audit_publication.py
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install '.[dev]'
+      - run: ruff format --check src tests scripts
+      - run: ruff check src tests scripts
+
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install '.[dev,mcp]'
+      - run: mypy
+
+  tests:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install '.[dev,mcp]'
+      - name: Unit, contract and integration tests with coverage
+        run: pytest
+      - name: CLI smoke
+        run: |
+          allwr-toolkit version
+          allwr-toolkit connectors list
+          allwr-toolkit connectors describe asana
+          allwr-toolkit connectors describe freshdesk
+      - name: MCP smoke (writes stay disabled by default)
+        run: |
+          python - <<'EOF'
+          from allwr_toolkit.mcp.server import build_server
+          import asyncio
+          tools = {t.name for t in asyncio.run(build_server().list_tools())}
+          assert "apply_plan" not in tools, "write tools must be off by default"
+          assert "list_connectors" in tools
+          print("MCP smoke ok:", sorted(tools))
+          EOF
+
+  examples:
+    name: Example configurations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install '.[dev,mcp]'
+      - name: Validate the shipped example configuration and dry run
+        run: |
+          allwr-toolkit doctor --config examples/asana/migration.yaml
+          allwr-toolkit migrate asana inspect --config examples/asana/migration.yaml
+          allwr-toolkit migrate asana plan --config examples/asana/migration.yaml \
+            --out /tmp/example-plan.json
+          allwr-toolkit migrate asana apply --config examples/asana/migration.yaml \
+            --plan /tmp/example-plan.json --state /tmp/example-state.db \
+            --report-dir /tmp/example-reports
+
+  build:
+    name: Package build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+
+  docs:
+    name: Docs build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install '.[dev]'
+      - run: mkdocs build --strict
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: [policy, lint, type-check, tests, examples, build, docs]
+    if: always()
+    steps:
+      - name: Fail unless every required job succeeded
+        run: |
+          echo '${{ toJSON(needs) }}'
+          for result in $(echo '${{ toJSON(needs.*.result) }}' | tr -d '[]", '); do
+            if [ "$result" != "success" ]; then
+              echo "A required job finished with result: $result"
+              exit 1
+            fi
+          done
+          echo "Quality Gate passed."

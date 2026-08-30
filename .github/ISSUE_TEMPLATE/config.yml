@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability (private)
+    url: https://github.com/wealthreader/allwr-toolkit/security/advisories/new
+    about: Never open a public issue for security problems. Report privately here.

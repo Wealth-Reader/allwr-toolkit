@@ -1,0 +1,50 @@
+name: Bug report
+description: Something in the toolkit does not behave as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Never include credentials, tokens, customer names or real exported
+        data. Redact everything sensitive before submitting.
+  - type: input
+    id: version
+    attributes:
+      label: Toolkit version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Python version and OS
+      placeholder: "Python 3.12 on Ubuntu 24.04"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you run, what did you expect, what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Smallest configuration and command that reproduces it (redacted).
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: Redacted logs or report excerpts.
+      render: text
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: This report contains no credentials or real customer data.
+          required: true

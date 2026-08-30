@@ -1,0 +1,13 @@
+# Default owner for everything in the repository.
+* @davidwealthreader
+
+# Areas called out explicitly so ownership survives future reorganizations.
+/src/allwr_toolkit/core/ @davidwealthreader
+/src/allwr_toolkit/api/ @davidwealthreader
+/src/allwr_toolkit/mcp/ @davidwealthreader
+/src/allwr_toolkit/connectors/ @davidwealthreader
+/.github/ @davidwealthreader
+/SECURITY.md @davidwealthreader
+/pyproject.toml @davidwealthreader
+/docs/ @davidwealthreader
+/scripts/ @davidwealthreader

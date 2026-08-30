@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Full verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install '.[dev,mcp]'
+      - run: python scripts/validate_repository_language.py
+      - run: python scripts/audit_publication.py
+      - run: ruff format --check src tests scripts && ruff check src tests scripts
+      - run: mypy
+      - run: pytest
+      - run: mkdocs build --strict
+
+  release:
+    name: Build and publish GitHub release
+    runs-on: ubuntu-latest
+    needs: [verify]
+    permissions:
+      contents: write # create the release and upload artifacts
+      id-token: write # provenance attestations
+      attestations: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Build wheel and sdist
+        run: |
+          python -m pip install build twine pip-audit
+          python -m build
+          twine check dist/*
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: SBOM (CycloneDX)
+        run: |
+          python -m pip install '.[mcp]'
+          pip-audit --format cyclonedx-json --output dist/sbom.cyclonedx.json || \
+          pip-audit -f cyclonedx-json -o dist/sbom.cyclonedx.json
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: "dist/*.whl,dist/*.tar.gz"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: release-artifacts
+          path: dist/
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --title "ALL WR Toolkit ${GITHUB_REF_NAME}" \
+            --notes-file docs/release-notes/${GITHUB_REF_NAME}.md \
+            --verify-tag
+
+# PyPI publishing is intentionally absent: package naming and release policy
+# must be approved first. When enabled, use OIDC trusted publishing, never a
+# long-lived token.

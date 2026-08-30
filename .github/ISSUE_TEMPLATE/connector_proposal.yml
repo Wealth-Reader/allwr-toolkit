@@ -1,0 +1,41 @@
+name: Connector proposal
+description: Propose a new source connector (Jira, Trello, Zendesk, CSV...).
+labels: [connector-request, needs-design]
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Source product
+      placeholder: "Jira Cloud"
+    validations:
+      required: true
+  - type: textarea
+    id: records
+    attributes:
+      label: Record types to migrate
+      description: Projects, tasks, tickets, comments, attachments, users...
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Source API
+      description: >
+        Link to the API documentation. Note auth modes, pagination and rate
+        limits if you know them.
+    validations:
+      required: true
+  - type: textarea
+    id: mapping
+    attributes:
+      label: Mapping sketch
+      description: How would the source concepts map to ALL WR tasks?
+  - type: dropdown
+    id: commitment
+    attributes:
+      label: Are you offering to implement it?
+      options:
+        - "Yes, I want to implement it"
+        - "No, proposal only"
+    validations:
+      required: true

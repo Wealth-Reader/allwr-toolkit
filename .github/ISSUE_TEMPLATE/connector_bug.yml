@@ -1,0 +1,44 @@
+name: Connector bug
+description: A specific connector mishandles source data.
+labels: [bug, connector]
+body:
+  - type: dropdown
+    id: connector
+    attributes:
+      label: Connector
+      options:
+        - asana
+        - freshdesk
+        - other (third-party)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Toolkit version
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: >
+        Which records are affected and how (wrong mapping, missing data,
+        crash). Use synthetic identifiers; never paste real customer data.
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Synthetic reproduction fixture
+      description: >
+        A sanitized, synthetic source payload that reproduces the problem.
+        This usually becomes the regression test.
+      render: json
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: This report contains no credentials or real customer data.
+          required: true
