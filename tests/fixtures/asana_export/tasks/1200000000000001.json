@@ -1,0 +1,69 @@
+{
+  "gid": "1200000000000001",
+  "name": "Redesign the landing page",
+  "notes": "Refresh the hero section and update the pricing table.",
+  "html_notes": "<body>Refresh the <b>hero section</b> and update the pricing table.<script>alert('x')</script></body>",
+  "completed": false,
+  "completed_at": null,
+  "created_at": "2024-03-01T09:00:00.000Z",
+  "modified_at": "2024-04-02T10:30:00.000Z",
+  "due_on": "2024-05-01",
+  "start_on": "2024-03-01",
+  "assignee": {"gid": "1200000000000101", "name": "Alex Doe"},
+  "created_by": {"gid": "1200000000000102", "name": "Robin Roe"},
+  "permalink_url": "https://app.asana.example.com/0/1200000000000301/1200000000000001",
+  "projects": [{"gid": "1200000000000301", "name": "Website Redesign"}],
+  "memberships": [
+    {
+      "project": {"gid": "1200000000000301", "name": "Website Redesign"},
+      "section": {"gid": "1200000000000401", "name": "To do"}
+    }
+  ],
+  "tags": [{"name": "design"}, {"name": "frontend"}],
+  "custom_fields": [
+    {"name": "Effort", "display_value": "8", "type": "number"}
+  ],
+  "followers": [
+    {"gid": "1200000000000101", "name": "Alex Doe"},
+    {"gid": "1200000000000102", "name": "Robin Roe"}
+  ],
+  "num_subtasks": 2,
+  "dependencies": [{"gid": "1200000000000009"}],
+  "stories": [
+    {
+      "gid": "1200000000000501",
+      "type": "comment",
+      "created_at": "2024-03-02T12:00:00.000Z",
+      "created_by": {"gid": "1200000000000101", "name": "Alex Doe"},
+      "text": "First draft is ready for review.",
+      "html_text": "<body>First draft is ready for <i>review</i>.</body>"
+    },
+    {
+      "gid": "1200000000000502",
+      "type": "comment",
+      "created_at": "2024-03-03T12:00:00.000Z",
+      "created_by": {"gid": "1200000000000199", "name": "Former Employee"},
+      "text": "Looks good to me.",
+      "html_text": "<body>Looks good to me.</body>"
+    }
+  ],
+  "attachments": [
+    {
+      "gid": "1200000000000601",
+      "name": "wireframe.txt",
+      "host": "asana",
+      "size": 24,
+      "created_at": "2024-03-02T12:30:00.000Z",
+      "download_url": "https://files.example.com/wireframe.txt",
+      "local_path": "attachments/1200000000000001/1200000000000601_wireframe.txt"
+    },
+    {
+      "gid": "1200000000000602",
+      "name": "brand deck",
+      "host": "external",
+      "view_url": "https://drive.example.com/deck",
+      "local_path": null
+    }
+  ],
+  "subtask_gids": ["1200000000000002", "1200000000000003"]
+}

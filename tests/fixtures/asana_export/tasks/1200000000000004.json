@@ -1,0 +1,15 @@
+{
+  "gid": "1200000000000004",
+  "name": "Redesign the landing page",
+  "notes": "A different task that happens to share its title with another one.",
+  "html_notes": "<body>A different task that happens to share its title with another one.</body>",
+  "completed": false,
+  "created_at": "2024-04-01T09:00:00.000Z",
+  "assignee": {"gid": "1200000000000198", "name": "Sam Poe"},
+  "created_by": {"gid": "1200000000000101", "name": "Alex Doe"},
+  "permalink_url": "https://app.asana.example.com/0/1200000000000301/1200000000000004",
+  "projects": [{"gid": "1200000000000301", "name": "Website Redesign"}],
+  "stories": [],
+  "attachments": [],
+  "subtask_gids": []
+}
