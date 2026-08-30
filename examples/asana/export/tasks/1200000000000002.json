@@ -1,0 +1,17 @@
+{
+  "gid": "1200000000000002",
+  "name": "Write new pricing copy",
+  "notes": "Three tiers, monthly and yearly.",
+  "html_notes": "<body>Three tiers, monthly and yearly.</body>",
+  "completed": true,
+  "completed_at": "2024-02-28T00:00:00.000Z",
+  "created_at": "2024-03-01T10:00:00.000Z",
+  "modified_at": "2024-03-20T10:00:00.000Z",
+  "assignee": {"gid": "1200000000000102", "name": "Robin Roe"},
+  "created_by": {"gid": "1200000000000101", "name": "Alex Doe"},
+  "permalink_url": "https://app.asana.example.com/0/1200000000000301/1200000000000002",
+  "projects": [],
+  "stories": [],
+  "attachments": [],
+  "subtask_gids": []
+}

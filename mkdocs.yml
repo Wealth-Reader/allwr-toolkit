@@ -1,0 +1,45 @@
+site_name: ALL WR Toolkit
+site_description: Open-source migration, integration and automation tools for ALL WR.
+repo_url: https://github.com/wealthreader/allwr-toolkit
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue grey
+strict: true
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Guides:
+      - Installation: installation.md
+      - Authentication: authentication.md
+      - Configuration: configuration.md
+      - Migration lifecycle: migration-lifecycle.md
+      - Planning: planning.md
+      - Applying: applying.md
+      - Resuming: resuming.md
+      - Reports: reports.md
+      - Cleanup: cleanup.md
+      - Troubleshooting: troubleshooting.md
+  - Connectors:
+      - Asana: connectors/asana.md
+      - Freshdesk: connectors/freshdesk.md
+      - Writing a connector: connector-development.md
+  - Interfaces:
+      - CLI: cli.md
+      - MCP server: mcp.md
+  - Architecture: architecture.md
+  - Security: security.md
+  - Privacy: privacy.md
+  - Release policy: release-policy.md
+  - Maintainers:
+      - Repository settings: maintainers/repository-settings.md
+      - Release process: maintainers/release-process.md
+      - Security review: maintainers/security-review.md
+  - ADRs:
+      - ADR-0001 Python and tooling: adr/0001-python-and-tooling.md
+      - ADR-0002 Canonical model and connector SDK: adr/0002-canonical-model-and-connector-sdk.md
+      - ADR-0003 SQLite state store: adr/0003-sqlite-state-store.md
+      - ADR-0004 Plan/apply with hash verification: adr/0004-plan-apply-hash.md
+      - ADR-0005 MCP write gating: adr/0005-mcp-write-gating.md
+      - ADR-0006 Apache-2.0 and DCO: adr/0006-license-and-dco.md

@@ -1,0 +1,32 @@
+# Example Freshdesk migration configuration.
+# All values are synthetic. Credentials come from environment variables only
+# (ALLWR_TOOLKIT_FRESHDESK_API_KEY and ALLWR_TOOLKIT_ALLWR_API_KEY).
+connector: freshdesk
+
+source:
+  domain: yourcompany # yourcompany.freshdesk.com
+  include_closed: true
+
+target:
+  base_url: https://allwr.example.com/api/v1
+  project_id: 55
+  section_open: 200
+  section_done: 201
+  environment: sandbox
+
+mapping:
+  users:
+    - email: agent.one@example.com
+      target_user_id: 21
+  statuses:
+    open: open
+    pending: open
+    resolved: done
+    closed: done
+  priorities:
+    urgent: high
+  on_unknown_user: "null"
+
+options:
+  include_attachments: true
+  stop_on_data_loss: false

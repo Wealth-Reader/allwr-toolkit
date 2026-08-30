@@ -1,0 +1,11 @@
+# Minimal migration configuration in TOML (YAML works identically).
+connector = "asana"
+
+[source]
+mode = "offline"
+data_dir = "examples/asana/export"
+selection_manifest = "examples/asana/selection.txt"
+
+[target]
+base_url = "https://allwr.example.com/api/v1"
+project_id = 42

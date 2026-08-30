@@ -1,0 +1,18 @@
+{
+  "users": [
+    {"gid": "1200000000000101", "name": "Alex Doe", "email": "alex.doe@example.com"},
+    {"gid": "1200000000000102", "name": "Robin Roe", "email": "robin.roe@example.com"}
+  ],
+  "teams": [{"gid": "1200000000000201", "name": "Engineering"}],
+  "projects": [
+    {
+      "gid": "1200000000000301",
+      "name": "Website Redesign",
+      "archived": false,
+      "sections": [
+        {"gid": "1200000000000401", "name": "To do"},
+        {"gid": "1200000000000402", "name": "Done"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+# Example Asana migration configuration (offline export mode).
+# All values are synthetic. Credentials come from environment variables only.
+connector: asana
+
+source:
+  mode: offline # or "api" with ALLWR_TOOLKIT_ASANA_TOKEN set
+  data_dir: examples/asana/export
+  selection_manifest: examples/asana/selection.txt
+
+target:
+  # There is no default target on purpose: point this at YOUR tenant's API.
+  base_url: https://allwr.example.com/api/v1
+  project_id: 42
+  section_open: 100
+  section_done: 101
+  import_batch_id: 1
+  environment: sandbox
+
+mapping:
+  users:
+    - source_id: "1200000000000101"
+      email: alex.doe@example.com
+      target_user_id: 11
+    - source_id: "1200000000000102"
+      email: robin.roe@example.com
+      target_user_id: 12
+  on_unknown_user: "null" # import unassigned, preserve author as legacy metadata
+
+options:
+  include_completed: true
+  include_attachments: true
+  preserve_source_ids: true
+  stop_on_data_loss: false
+  accepted_warnings: []

@@ -1,0 +1,12 @@
+{
+  "gid": "1200000000000003",
+  "name": "Ping the design team",
+  "notes": "",
+  "completed": false,
+  "created_at": "2024-03-05T09:00:00.000Z",
+  "assignee": null,
+  "created_by": {"gid": "1200000000000101", "name": "Alex Doe"},
+  "stories": [],
+  "attachments": [],
+  "subtask_gids": []
+}
