@@ -40,3 +40,6 @@ exports/
 .vscode/
 *.swp
 .DS_Store
+
+# Private publication-audit patterns (never committed)
+.audit-denylist.local

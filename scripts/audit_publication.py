@@ -30,15 +30,24 @@ SECRET_PATTERNS: dict[str, re.Pattern[str]] = {
     ),
 }
 
-# Internal identifiers that must never ship in the public toolkit.
+# Identifiers that must never ship in the public toolkit.
 REAL_DATA_PATTERNS: dict[str, re.Pattern[str]] = {
-    "internal hostname": re.compile(
-        r"\b([REDACTED-HOST]|[REDACTED-HOST]|[REDACTED-HOST]|www-local\.allwr\.io)\b"  # audit-ok
-    ),
     # The public homepage may be referenced; a production API/app URL may not.
     "production api url": re.compile(r"https://www\.allwr\.io/\S*(api|app|tasks)"),
     "wealthreader email": re.compile(r"\b[A-Za-z0-9._%+-]+@wealthreader\.com\b"),
 }
+
+# Maintainers keep additional private patterns (for example internal hostnames)
+# in an untracked local file so this public script never documents them.
+# One regular expression per line; blank lines and "#" comments are ignored.
+PRIVATE_DENYLIST = REPO_ROOT / ".audit-denylist.local"
+if PRIVATE_DENYLIST.exists():
+    for _index, _raw in enumerate(
+        PRIVATE_DENYLIST.read_text(encoding="utf-8").splitlines(), start=1
+    ):
+        _line = _raw.strip()
+        if _line and not _line.startswith("#"):
+            REAL_DATA_PATTERNS[f"private denylist entry {_index}"] = re.compile(_line)
 
 
 def tracked_files() -> list[Path]:

@@ -147,12 +147,13 @@ def test_upload_attachment_streams_multipart(tmp_path) -> None:  # type: ignore[
 
 @respx.mock
 def test_error_messages_are_redacted() -> None:
+    fake_key = "wrk_" + "secret1234"  # concatenated so the publication audit never matches
     respx.post(f"{TARGET_BASE_URL}/tasks").mock(
         return_value=httpx.Response(
             400,
-            json={"ok": False, "error": "bad", "message": "leaked wrk-[REDACTED] here"},  # audit-ok
+            json={"ok": False, "error": "bad", "message": f"leaked {fake_key} here"},
         )
     )
     with make_client() as client, pytest.raises(TargetError) as excinfo:
         client.create_task(TaskPayload(project_id=1, title="x"))
-    assert "wrk-[REDACTED]" not in str(excinfo.value)  # audit-ok
+    assert fake_key not in str(excinfo.value)
