@@ -13,3 +13,8 @@ updates:
     schedule:
       interval: weekly
     labels: [dependencies]
+    # init and analyze must share one CodeQL Action version; split PRs fail CI.
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
