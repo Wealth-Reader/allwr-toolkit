@@ -1,8 +1,8 @@
 # Instructions for AI agents
 
-## Continuidad del trabajo
+## Work continuity
 
-- No detenerse a esperar confirmación si el siguiente paso ya está determinado y no es destructivo, irreversible ni carece de autorización. Cerrar una unidad no es motivo para parar. Si hay varias aproximaciones y una es la recomendada, elegirla, declararla en una frase y continuar: no presentar un menú ni preguntar. Las paradas innecesarias cortan el flujo y retrasan el trabajo.
+- Do not stop to wait for confirmation when the next step is already determined and is neither destructive, irreversible nor unauthorized. Finishing a unit of work is not a reason to stop. When there are several approaches and one is recommended, choose it, state it in one sentence and continue: do not present a menu or ask. Unnecessary stops break the flow and delay the work.
 
 These rules are imperative. If you are an AI agent (or a human using one),
 follow them exactly. Nested files add rules for their subtree:
