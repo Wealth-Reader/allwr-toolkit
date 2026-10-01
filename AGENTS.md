@@ -1,5 +1,9 @@
 # Instructions for AI agents
 
+## Work continuity
+
+- Do not stop to wait for confirmation when the next step is already determined and is neither destructive, irreversible nor unauthorized. Finishing a unit of work is not a reason to stop. When there are several approaches and one is recommended, choose it, state it in one sentence and continue: do not present a menu or ask. Unnecessary stops break the flow and delay the work.
+
 These rules are imperative. If you are an AI agent (or a human using one),
 follow them exactly. Nested files add rules for their subtree:
 `src/allwr_toolkit/connectors/AGENTS.md` and `tests/AGENTS.md`.
