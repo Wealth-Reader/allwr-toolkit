@@ -1,5 +1,9 @@
 # Instructions for AI agents
 
+## Continuidad del trabajo
+
+- No detenerse a esperar confirmación si el siguiente paso ya está determinado y no es destructivo, irreversible ni carece de autorización. Cerrar una unidad no es motivo para parar. Si hay varias aproximaciones y una es la recomendada, elegirla, declararla en una frase y continuar: no presentar un menú ni preguntar. Las paradas innecesarias cortan el flujo y retrasan el trabajo.
+
 These rules are imperative. If you are an AI agent (or a human using one),
 follow them exactly. Nested files add rules for their subtree:
 `src/allwr_toolkit/connectors/AGENTS.md` and `tests/AGENTS.md`.
