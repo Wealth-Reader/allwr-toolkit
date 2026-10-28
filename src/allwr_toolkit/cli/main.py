@@ -24,6 +24,15 @@ from allwr_toolkit.core.errors import (
     ToolkitError,
 )
 from allwr_toolkit.core.planning import load_plan
+from allwr_toolkit.mcp.clients import (
+    SERVER_KEY,
+    ClientInspection,
+    plan_mcp_setup,
+    resolve_mcp_command,
+    run_mcp_doctor,
+    run_mcp_setup,
+    summarize_inspections,
+)
 from allwr_toolkit.security import install_redaction
 
 EXIT_OK = 0
@@ -399,6 +408,30 @@ def migration_cleanup_plan(
     )
 
 
+def _is_interactive_tty() -> bool:
+    import sys
+
+    return not _state["json"] and bool(getattr(sys.stdin, "isatty", lambda: False)())
+
+
+def _format_mcp_clients_human(items: list[ClientInspection], *, header: str) -> str:
+    if not items:
+        return f"{header}\n  No MCP clients detected."
+    lines = [header]
+    for item in items:
+        target = str(item.config_path) if item.config_path is not None else "manual"
+        lines.append(
+            f"  [{item.status}] {item.display_name} ({item.client_id}): {target} - {item.message}"
+        )
+        if item.backup_path is not None:
+            lines.append(f"    backup: {item.backup_path}")
+        if item.recovery_path is not None:
+            lines.append(f"    recovery: {item.recovery_path}")
+        if item.remediation:
+            lines.append(f"    remediation: {item.remediation}")
+    return "\n".join(lines)
+
+
 @mcp_app.command("serve")
 def mcp_serve() -> None:
     """Run the MCP server on stdio. Write tools stay disabled unless
@@ -410,6 +443,174 @@ def mcp_serve() -> None:
             ConfigurationError("the MCP extra is not installed: pip install 'allwr-toolkit[mcp]'")
         ) from exc
     serve()  # pragma: no cover - blocks on stdio
+
+
+@mcp_app.command("setup")
+def mcp_setup(
+    client: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--client",
+            "-c",
+            help=(
+                "Target MCP client ID(s) (repeatable, comma-separated, or 'all'). "
+                "Defaults to all detected clients."
+            ),
+        ),
+    ] = None,
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry-run", help="Show planned configuration changes without writing files."),
+    ] = False,
+    yes: Annotated[
+        bool,
+        typer.Option("--yes", "-y", help="Apply configuration changes without prompting."),
+    ] = False,
+) -> None:
+    """Register the read-only ALL WR MCP server across installed AI agents."""
+    try:
+        cmd, args = resolve_mcp_command()
+        planned = plan_mcp_setup(client_ids=client)
+    except ToolkitError as exc:
+        raise _fail(exc) from exc
+
+    counts = summarize_inspections(planned)
+    has_problems = any(item.status in {"conflict", "malformed"} for item in planned)
+
+    if dry_run:
+        payload: dict[str, Any] = {
+            "ok": not has_problems,
+            "status": "planned",
+            "dry_run": True,
+            "server_key": SERVER_KEY,
+            "command": cmd,
+            "args": args,
+            "counts": counts,
+            "clients": [item.to_dict() for item in planned],
+        }
+        human = _format_mcp_clients_human(
+            planned, header=f"MCP setup dry-run ({cmd} {' '.join(args)}):"
+        )
+        _emit(payload, human)
+        if has_problems:
+            raise typer.Exit(EXIT_VALIDATION)
+        return
+
+    if counts["planned_writes"] == 0:
+        status_label = "conflict" if has_problems else "ready"
+        payload = {
+            "ok": not has_problems,
+            "status": status_label,
+            "dry_run": False,
+            "server_key": SERVER_KEY,
+            "command": cmd,
+            "args": args,
+            "counts": counts,
+            "clients": [item.to_dict() for item in planned],
+        }
+        human = _format_mcp_clients_human(planned, header=f"MCP setup ({status_label}):")
+        _emit(payload, human)
+        if has_problems:
+            raise typer.Exit(EXIT_VALIDATION)
+        return
+
+    if not yes:
+        if _state["json"] or not _is_interactive_tty():
+            remediation_msg = "Re-run with --yes to apply these MCP client configuration changes."
+            payload = {
+                "ok": False,
+                "status": "needs_confirmation",
+                "dry_run": False,
+                "server_key": SERVER_KEY,
+                "command": cmd,
+                "args": args,
+                "counts": counts,
+                "remediation": remediation_msg,
+                "clients": [item.to_dict() for item in planned],
+            }
+            human = (
+                _format_mcp_clients_human(planned, header="MCP setup plan (confirmation required):")
+                + f"\n{remediation_msg}"
+            )
+            _emit(payload, human)
+            raise typer.Exit(EXIT_VALIDATION)
+
+        typer.echo(
+            _format_mcp_clients_human(planned, header="Planned MCP client configuration changes:")
+        )
+        confirmed = typer.confirm("Apply these MCP client configuration changes?", default=False)
+        if not confirmed:
+            typer.echo("aborted")
+            raise typer.Exit(EXIT_OK)
+
+    try:
+        applied = run_mcp_setup(client_ids=client)
+    except ToolkitError as exc:  # pragma: no cover - defensive
+        raise _fail(exc) from exc
+
+    applied_counts = summarize_inspections(applied)
+    applied_problems = any(item.status in {"conflict", "malformed"} for item in applied)
+    final_status = "conflict" if applied_problems else "applied"
+    payload = {
+        "ok": not applied_problems,
+        "status": final_status,
+        "dry_run": False,
+        "server_key": SERVER_KEY,
+        "command": cmd,
+        "args": args,
+        "counts": applied_counts,
+        "clients": [item.to_dict() for item in applied],
+    }
+    human = _format_mcp_clients_human(applied, header=f"MCP setup ({final_status}):")
+    _emit(payload, human)
+    if applied_problems:
+        raise typer.Exit(EXIT_VALIDATION)
+
+
+@mcp_app.command("doctor")
+def mcp_doctor(
+    client: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--client",
+            "-c",
+            help=(
+                "MCP client ID(s) to check (repeatable, comma-separated, or 'all'). "
+                "Defaults to all detected clients."
+            ),
+        ),
+    ] = None,
+) -> None:
+    """Check MCP server dependencies and client registrations."""
+    try:
+        report = run_mcp_doctor(client_ids=client)
+    except ToolkitError as exc:
+        raise _fail(exc) from exc
+
+    extra_detail = "installed" if report["mcp_extra_installed"] else "not installed (optional)"
+    header = (
+        f"MCP doctor:\n"
+        f"  mcp extra: {extra_detail}\n"
+        f"  command:   {report['command']} {' '.join(report['args'])}"
+    )
+    client_dicts: list[dict[str, Any]] = report["clients"]
+    if not client_dicts:
+        human = f"{header}\n  clients:   no MCP clients detected"
+    else:
+        lines = [header, "  clients:"]
+        for c in client_dicts:
+            target = c["config_path"] or "manual"
+            lines.append(
+                f"    [{c['status']}] {c['display_name']} ({c['client_id']}): "
+                f"{target} - {c['message']}"
+            )
+            if c.get("remediation"):
+                lines.append(f"      remediation: {c['remediation']}")
+        human = "\n".join(lines)
+
+    _emit(report, human)
+    if not report["ok"]:
+        raise typer.Exit(EXIT_VALIDATION)
 
 
 def main() -> None:  # pragma: no cover - thin entry point

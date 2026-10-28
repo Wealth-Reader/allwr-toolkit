@@ -26,5 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and meaningful exit codes; dry-run by default.
 - MCP server (alpha): read and planning tools by default; mutating tools only
   with `ALLWR_MCP_ALLOW_WRITES=true`; apply requires a verified plan.
+- Multi-agent MCP auto-setup and doctor (`allwr-toolkit mcp setup` and
+  `allwr-toolkit mcp doctor`): automatic detection, surgical JSON/JSONC/TOML/YAML
+  registration, ownership conflict detection, and `.allwr-toolkit.backup` /
+  `.recovery` rotation across 26 AI coding clients.
 - Full test suite (unit, contract, integration), quality tooling, CI/security
   workflows, documentation and governance files.

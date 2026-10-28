@@ -18,6 +18,8 @@ extra operational metadata may be logged).
 | `allwr-toolkit migration report <run-id> --plan P` | Generate the report bundle |
 | `allwr-toolkit migration cleanup-plan <run-id>` | Print the cleanup manifest |
 | `allwr-toolkit mcp serve` | Run the MCP server on stdio |
+| `allwr-toolkit mcp setup [--client C] [--dry-run] [--yes]` | Register the MCP server across AI agents |
+| `allwr-toolkit mcp doctor [--client C]` | Check MCP extra and client registrations |
 
 Secrets are never CLI arguments — see [authentication](authentication.md).
 Exit codes are documented in [troubleshooting](troubleshooting.md).

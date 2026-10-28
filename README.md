@@ -30,6 +30,26 @@ pip install .
 pip install '.[mcp]'
 ```
 
+## AI agent MCP setup (one command)
+
+Auto-detect and register the read-only `allwr-toolkit` MCP server across your
+installed AI coding agents (Claude Code, Claude Desktop, Codex, Cursor, Gemini
+CLI, Windsurf, VS Code, OpenCode, Copilot CLI, Antigravity, and 15+ more):
+
+```bash
+allwr-toolkit mcp setup --yes
+# or with uvx:
+uvx --from 'allwr-toolkit[mcp]' allwr-toolkit mcp setup --yes
+
+# Preview planned file changes without writing, or verify registrations:
+allwr-toolkit mcp setup --dry-run
+allwr-toolkit mcp doctor
+```
+
+Registered agent configurations never enable write tools by default
+(`ALLWR_MCP_ALLOW_WRITES` stays unset), and existing config files are backed up
+automatically to `<config>.allwr-toolkit.backup` before any modification.
+
 ## Quick start: a dry run
 
 Migrations are configuration-driven and **dry-run by default**. Nothing is
